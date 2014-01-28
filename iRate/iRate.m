@@ -393,6 +393,38 @@ static NSString *const iRateMacAppStoreURLFormat = @"macappstore://itunes.apple.
     self.eventCount ++;
 }
 
+- (BOOL)shouldCheckForConnectivityOnStart
+{
+    //preview mode?
+    if (self.previewMode)
+    {
+        NSLog(@"iRate preview mode is enabled - make sure you disable this for release");
+        return YES;
+    }
+    
+    //check if we've rated any version
+    else if (self.ratedAnyVersion)
+    {
+        if (self.verboseLogging)
+        {
+            NSLog(@"iRate stopped did not check for connectivity on launch because the user has already rated the app");
+        }
+        return NO;
+    }
+    
+    //check if we've declined to rate the app
+    else if (self.declinedAnyVersion)
+    {
+        if (self.verboseLogging)
+        {
+            NSLog(@"iRate stopped did not check for connectivity on launch because the user has declined to rate the app");
+        }
+        return NO;
+    }
+    
+    return YES;
+}
+
 - (BOOL)shouldPromptForRating
 {   
     //preview mode?
@@ -842,7 +874,12 @@ static NSString *const iRateMacAppStoreURLFormat = @"macappstore://itunes.apple.
     }
     
     [self incrementUseCount];
-    [self checkForConnectivityInBackground];
+    
+    if ([self shouldCheckForConnectivityOnStart])
+    {
+        [self checkForConnectivityInBackground];
+    }
+    
     if (self.promptAtLaunch && [self shouldPromptForRating])
     {
         [self promptIfNetworkAvailable];
@@ -856,7 +893,12 @@ static NSString *const iRateMacAppStoreURLFormat = @"macappstore://itunes.apple.
     if ([UIApplication sharedApplication].applicationState == UIApplicationStateBackground)
     {
         [self incrementUseCount];
-        [self checkForConnectivityInBackground];
+        
+        if ([self shouldCheckForConnectivityOnStart])
+        {
+            [self checkForConnectivityInBackground];
+        }
+        
         if (self.promptAtLaunch && [self shouldPromptForRating])
         {
             [self promptIfNetworkAvailable];
