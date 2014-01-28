@@ -407,7 +407,7 @@ static NSString *const iRateMacAppStoreURLFormat = @"macappstore://itunes.apple.
     {
         if (self.verboseLogging)
         {
-            NSLog(@"iRate stopped did not check for connectivity on launch because the user has already rated the app");
+            NSLog(@"iRate did not check for connectivity on start because the user has already rated the app");
         }
         return NO;
     }
@@ -417,7 +417,7 @@ static NSString *const iRateMacAppStoreURLFormat = @"macappstore://itunes.apple.
     {
         if (self.verboseLogging)
         {
-            NSLog(@"iRate stopped did not check for connectivity on launch because the user has declined to rate the app");
+            NSLog(@"iRate did not check for connectivity on start because the user has declined to rate the app");
         }
         return NO;
     }
